@@ -109,4 +109,12 @@ async function googleCallback(req, res) {
   res.redirect(redirectUrl.toString());
 }
 
-module.exports = { register, login, refresh, logout, me, googleCallback };
+async function updateMe(req, res) {
+  const user = await prisma.user.update({
+    where: { id: req.user.id },
+    data: req.body,
+  });
+  res.json({ user: sanitizeUser(user) });
+}
+
+module.exports = { register, login, refresh, logout, me, googleCallback, updateMe };

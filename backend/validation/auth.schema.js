@@ -16,4 +16,10 @@ const refreshSchema = z.object({
   refreshToken: z.string().min(1),
 });
 
-module.exports = { registerSchema, loginSchema, refreshSchema };
+const updateProfileSchema = z.object({
+  name: z.string().min(2).max(100).optional(),
+  bio: z.string().max(1000).optional(),
+  avatarUrl: z.string().url().optional(),
+});
+
+module.exports = { registerSchema, loginSchema, refreshSchema, updateProfileSchema };

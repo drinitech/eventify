@@ -3,7 +3,7 @@ const rateLimit = require('express-rate-limit');
 const passport = require('../config/passport');
 const { validate } = require('../middleware/validation.middleware');
 const { requireAuth } = require('../middleware/auth.middleware');
-const { registerSchema, loginSchema, refreshSchema } = require('../validation/auth.schema');
+const { registerSchema, loginSchema, refreshSchema, updateProfileSchema } = require('../validation/auth.schema');
 const authController = require('../controllers/auth.controller');
 const { asyncHandler } = require('../utils/asyncHandler');
 
@@ -22,6 +22,7 @@ router.post('/login', authLimiter, validate(loginSchema), asyncHandler(authContr
 router.post('/refresh', authLimiter, validate(refreshSchema), asyncHandler(authController.refresh));
 router.post('/logout', requireAuth, asyncHandler(authController.logout));
 router.get('/me', requireAuth, asyncHandler(authController.me));
+router.patch('/me', requireAuth, validate(updateProfileSchema), asyncHandler(authController.updateMe));
 
 router.get(
   '/google',
