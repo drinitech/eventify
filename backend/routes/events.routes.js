@@ -4,9 +4,12 @@ const { optionalAuth } = require('../middleware/optionalAuth.middleware');
 const { validate } = require('../middleware/validation.middleware');
 const { createEventSchema, updateEventSchema, listEventsQuerySchema } = require('../validation/event.schema');
 const { checkInQrSchema } = require('../validation/ticket.schema');
+const { createCommentSchema } = require('../validation/comment.schema');
+const { broadcastSchema } = require('../validation/notification.schema');
 const { asyncHandler } = require('../utils/asyncHandler');
 const eventController = require('../controllers/event.controller');
 const ticketController = require('../controllers/ticket.controller');
+const commentController = require('../controllers/comment.controller');
 
 const router = express.Router();
 
@@ -25,5 +28,10 @@ router.patch('/:id/attendees/:ticketId/checkin', requireAuth, asyncHandler(event
 router.post('/:id/rsvp', requireAuth, asyncHandler(ticketController.rsvp));
 router.delete('/:id/rsvp', requireAuth, asyncHandler(ticketController.cancelRsvp));
 router.post('/:id/checkin-qr', requireAuth, validate(checkInQrSchema), asyncHandler(ticketController.checkInByQr));
+
+router.get('/:id/comments', asyncHandler(commentController.listComments));
+router.post('/:id/comments', requireAuth, validate(createCommentSchema), asyncHandler(commentController.createComment));
+
+router.post('/:id/notify', requireAuth, validate(broadcastSchema), asyncHandler(eventController.notifyAttendeesManually));
 
 module.exports = router;

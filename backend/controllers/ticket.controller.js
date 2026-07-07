@@ -24,6 +24,9 @@ async function rsvp(req, res) {
   if (event.organizerId === userId) {
     return res.status(400).json({ error: 'Nuk mund te besh RSVP ne eventin qe organizon vete' });
   }
+  if (new Date(event.date) < new Date()) {
+    return res.status(400).json({ error: 'Eventi ka perfunduar tashme' });
+  }
 
   const existing = await prisma.ticket.findUnique({
     where: { eventId_userId: { eventId, userId } },

@@ -6,6 +6,10 @@ const passport = require('./config/passport');
 const authRoutes = require('./routes/auth.routes');
 const eventsRoutes = require('./routes/events.routes');
 const ticketsRoutes = require('./routes/tickets.routes');
+const commentsRoutes = require('./routes/comments.routes');
+const organizersRoutes = require('./routes/organizers.routes');
+const notificationsRoutes = require('./routes/notifications.routes');
+const adminRoutes = require('./routes/admin.routes');
 
 const app = express();
 
@@ -23,6 +27,10 @@ app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/tickets', ticketsRoutes);
+app.use('/api/comments', commentsRoutes);
+app.use('/api/organizers', organizersRoutes);
+app.use('/api/notifications', notificationsRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.use((err, _req, res, _next) => {
   console.error(err);

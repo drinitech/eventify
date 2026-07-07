@@ -1,4 +1,5 @@
 const prisma = require('../config/db');
+const { notifyNewEvent, notifyAttendees } = require('../utils/notify');
 
 const organizerSelect = { id: true, name: true, avatarUrl: true, bio: true };
 
@@ -12,6 +13,8 @@ async function createEvent(req, res) {
       status: 'PUBLISHED',
     },
   });
+
+  await notifyNewEvent(event);
 
   res.status(201).json({ event });
 }
@@ -71,7 +74,19 @@ async function getEvent(req, res) {
     return res.status(404).json({ error: 'Eventi nuk u gjet' });
   }
 
-  res.json({ event });
+  const ratingAggregate = await prisma.comment.aggregate({
+    where: { eventId: id },
+    _avg: { rating: true },
+    _count: true,
+  });
+
+  res.json({
+    event: {
+      ...event,
+      avgRating: ratingAggregate._avg.rating,
+      totalReviews: ratingAggregate._count,
+    },
+  });
 }
 
 async function loadOwnedEvent(req, res) {
@@ -98,7 +113,28 @@ async function updateEvent(req, res) {
     data: req.body,
   });
 
+  const changes = [];
+  if (req.body.date && new Date(req.body.date).getTime() !== new Date(event.date).getTime()) {
+    changes.push(`data e re: ${new Date(updated.date).toLocaleString('sq-AL')}`);
+  }
+  if (req.body.location && req.body.location !== event.location) {
+    changes.push(`lokacioni i ri: ${updated.location}`);
+  }
+  if (changes.length > 0) {
+    await notifyAttendees(event.id, `Eventi "${updated.title}" ka ndryshime: ${changes.join(', ')}`);
+  }
+
   res.json({ event: updated });
+}
+
+async function notifyAttendeesManually(req, res) {
+  const event = await loadOwnedEvent(req, res);
+  if (!event) return;
+
+  const { message } = req.body;
+  await notifyAttendees(event.id, message);
+
+  res.status(204).send();
 }
 
 async function deleteEvent(req, res) {
@@ -194,4 +230,5 @@ module.exports = {
   dashboard,
   listAttendees,
   checkInAttendee,
+  notifyAttendeesManually,
 };
