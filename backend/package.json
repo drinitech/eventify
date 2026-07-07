@@ -5,6 +5,7 @@
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
+    "postinstall": "prisma generate",
     "start": "node server.js",
     "dev": "nodemon server.js",
     "prisma:generate": "prisma generate",
