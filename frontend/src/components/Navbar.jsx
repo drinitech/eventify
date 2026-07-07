@@ -37,6 +37,12 @@ export function Navbar() {
             </Link>
           )}
 
+          {user?.role === 'ADMIN' && (
+            <Link to="/admin" className="text-gray-600 hover:text-violet-600">
+              Admin
+            </Link>
+          )}
+
           {user ? (
             <>
               <Link

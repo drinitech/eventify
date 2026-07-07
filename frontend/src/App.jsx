@@ -9,6 +9,7 @@ import { CreateEvent } from './pages/CreateEvent';
 import { Dashboard } from './pages/Dashboard';
 import { Profile } from './pages/Profile';
 import { OrganizerProfile } from './pages/OrganizerProfile';
+import { Admin } from './pages/Admin';
 import { NotFound } from './pages/NotFound';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/organizers/:id" element={<OrganizerProfile />} />
+          <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
