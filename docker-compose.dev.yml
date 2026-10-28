@@ -1,0 +1,13 @@
+# Dev mode: the backend/ folder is bind-mounted and the server restarts on every change.
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+# Back to the production image:  docker compose up -d --build
+# After changing package.json add -V (--renew-anon-volumes) so node_modules is refreshed.
+services:
+  backend:
+    image: eventify-backend:dev
+    build:
+      context: ./backend
+      target: dev
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
